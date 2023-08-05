@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
+    private Vector2 lastMovementDirection = Vector2.zero;
+
 
     #endregion
 
@@ -33,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
     private SpriteRenderer sr;
     public static PlayerMovement Instance;
+    private Animator anim;
 
 
     #region Unity Callbacks
@@ -41,12 +44,14 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
         Instance = this;
     }
 
     private void Update()
     {
         HandleMovement();
+        HandleAnimation();
 
         if (isNearCactus)
         {
@@ -82,25 +87,42 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isHiding)
         {
-            // Input values for horizontal and vertical axes
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
+            Vector2 movement = new Vector2(horizontalInput, verticalInput).normalized;
 
-            // Calculate the movement vector
-            Vector2 movement = new Vector2(horizontalInput, verticalInput);
+            if (movement.magnitude > 0.01f)
+            {
+                lastMovementDirection = movement;
+            }
 
-            // Set the velocity of the Rigidbody to move the player
             rb.velocity = movement * moveSpeed;
 
-            // If you want to limit the player to move at the same speed in all directions,
-            // you can normalize the movement vector and then multiply it by the moveSpeed:
-            // rb.velocity = movement.normalized * moveSpeed;
+            // Update sprite rotation
+            if (movement.magnitude > 0.01f)
+            {
+                float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+            }
         }
-        if (isHiding)
+        else
         {
-            rb.velocity = new Vector2(0,0);
+            rb.velocity = Vector2.zero;
         }
     }
+
+    private void HandleAnimation()
+    {
+        if (rb.velocity.x != 0 && rb.velocity.y != 0)
+        {
+              anim.SetBool("isMoving", true);
+        }
+        else
+        {
+            anim.SetBool("isMoving", false);
+        }
+    }
+
 
     #endregion
 
@@ -126,7 +148,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 isHiding = true;
                 transform.position = cactusNearby.GetComponent<Cactus>().hideSpot.position;
+                cactusNearby.GetComponent<Cactus>().PlayerHide(gameObject);
                 sr.enabled = false;
+
             }
              else
             {

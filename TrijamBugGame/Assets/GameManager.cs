@@ -1,22 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject objectToSpawn;
+    public GameObject slowEnemyToSpawn;
+    public GameObject fastEnemyToSpawn;
+    public Transform[] enemySpawnPos;
     public float spawnInterval = 2f;
     public float spawnRadius = 1f;
     public Vector2 spawnBoundsMin = new Vector2(-5f, -5f);
     public Vector2 spawnBoundsMax = new Vector2(5f, 5f);
 
+    private PlayerMovement playerMovement;
+
     private void Start()
     {
-        // Start spawning objects at intervals
-        StartCoroutine(SpawnObjects());
+        playerMovement = FindObjectOfType<PlayerMovement>();
+        WaterSpawning();
+
+        if (playerMovement != null)
+        {
+            StartCoroutine(SpawnEnemies());
+        }
     }
 
-    private IEnumerator SpawnObjects()
+    private void WaterSpawning()
+    {
+        StartCoroutine(SpawnWater());
+    }
+
+    private IEnumerator SpawnWater()
     {
         while (true)
         {
@@ -29,6 +45,51 @@ public class GameManager : MonoBehaviour
             // Wait for the next spawn interval
             yield return new WaitForSeconds(spawnInterval);
         }
+    }
+
+    private IEnumerator SpawnEnemies()
+    {
+        while (true)
+        {
+            // Check if the player is not hiding before spawning an enemy
+            if (!playerMovement.isHiding)
+            {
+                SpawnEnemy();
+            }
+
+            // Wait for the next spawn interval
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    private void SpawnEnemy()
+    {
+        // Calculate a random position within the defined bounds
+        Vector3 spawnPosition = GetRandomSpawnPosition();
+
+        // Spawn the enemy at the random position
+        Instantiate(slowEnemyToSpawn, getEnemySpawnPos(), Quaternion.identity);
+    }
+
+    private Vector3 getEnemySpawnPos()
+    {
+        Vector3 closestSpawnPos = Vector3.zero;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Transform spawnPoint in enemySpawnPos)
+        {
+            // Calculate the distance from the spawn point to the player
+            float distanceToPlayer = Vector3.Distance(spawnPoint.position, playerMovement.transform.position);
+
+            // Check if this spawn point is closer to the player than the previous closest
+            if (distanceToPlayer < closestDistance)
+            {
+                closestDistance = distanceToPlayer;
+                closestSpawnPos = spawnPoint.position;
+            }
+        }
+
+        return closestSpawnPos;
     }
 
     private Vector3 GetRandomSpawnPosition()
