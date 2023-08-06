@@ -344,13 +344,14 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
-"Assets/Cactus.cs"
-"Assets/Enemy.cs"
-"Assets/GameManager.cs"
-"Assets/PlayerHealth.cs"
-"Assets/PlayerMovement.cs"
-"Assets/UIManager.cs"
-"Assets/WaterScript.cs"
+"Assets/AudioManager.cs"
+"Assets/Scripts/Cactus.cs"
+"Assets/Scripts/Enemy.cs"
+"Assets/Scripts/GameManager.cs"
+"Assets/Scripts/PlayerHealth.cs"
+"Assets/Scripts/PlayerMovement.cs"
+"Assets/Scripts/UIManager.cs"
+"Assets/Scripts/WaterScript.cs"
 -langversion:8.0
 
 /deterministic
