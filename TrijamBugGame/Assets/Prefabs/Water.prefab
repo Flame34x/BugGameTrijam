@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8339286605012197461}
   - component: {fileID: 8339286605012197451}
   - component: {fileID: 7152454671553633660}
+  - component: {fileID: -7438402816164295081}
   m_Layer: 0
   m_Name: Water
   m_TagString: Water
@@ -123,5 +124,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c357815b50e004ea6084d00c4c42e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetScale: {x: 0.2, y: 0.2, z: 0.2}
-  scaleTime: 2
+  targetScale: {x: 0.2, y: 0.2}
+  scaleTime: 0.5
+  attractionForce: 0
+  attractionRange: 0
+--- !u!50 &-7438402816164295081
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8339286605012197462}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

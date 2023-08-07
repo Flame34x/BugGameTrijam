@@ -5,19 +5,39 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    #region Public Variables
+
     public GameObject objectToSpawn;
     public GameObject slowEnemyToSpawn;
     public GameObject fastEnemyToSpawn;
     public Transform[] enemySpawnPos;
-    public float spawnInterval = 2f;
+    public float enemySpawnInterval = 2f;
+    public float waterSpawnInterval = 2f;
     public float spawnRadius = 1f;
     public Vector2 spawnBoundsMin = new Vector2(-5f, -5f);
     public Vector2 spawnBoundsMax = new Vector2(5f, 5f);
+    public int cactiLeft = 3;
+    public GameObject[] cacti;
 
+    public GameObject GameOverScreen;
+
+    #endregion
+
+    #region Private Variables
+
+    private float currentScore = 0f;
+    private float highScore = 0f;
+    private string highScoreKey = "HighScore";
     private PlayerMovement playerMovement;
+
+    #endregion
+
+    #region MonoBehaviour Callbacks
 
     private void Start()
     {
+        Time.timeScale = 1;
+        highScore = PlayerPrefs.GetFloat(highScoreKey, 0f);
         playerMovement = FindObjectOfType<PlayerMovement>();
         WaterSpawning();
 
@@ -25,6 +45,51 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(SpawnEnemies());
         }
+    }
+
+    private void Update()
+    {
+        currentScore += Time.deltaTime;
+
+        if (cactiLeft <= 0)
+        {
+            GameOver();
+        }
+        if (cactiLeft == 2)
+        {
+            waterSpawnInterval = 1.5f;
+            enemySpawnInterval = 2.3f;
+            foreach (GameObject cactus in cacti)
+            {
+                if (cactus != null)
+                {
+                    cactus.GetComponent<Cactus>().waterLossInterval = 1.2f;
+                }
+            }
+        }
+        if (cactiLeft == 1)
+        {
+            waterSpawnInterval = 1;
+            enemySpawnInterval = 2.5f;
+            foreach (GameObject cactus in cacti)
+            {
+                if (cactus != null)
+                {
+                    cactus.GetComponent<Cactus>().waterLossInterval = 1.5f;
+                }
+            }
+        }
+
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void GameOver()
+    {
+        GameOverScreen.SetActive(true);
+        Time.timeScale = 0;
     }
 
     private void WaterSpawning()
@@ -43,7 +108,7 @@ public class GameManager : MonoBehaviour
             Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
 
             // Wait for the next spawn interval
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(waterSpawnInterval);
         }
     }
 
@@ -58,7 +123,7 @@ public class GameManager : MonoBehaviour
             }
 
             // Wait for the next spawn interval
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(enemySpawnInterval);
         }
     }
 
@@ -68,7 +133,19 @@ public class GameManager : MonoBehaviour
         Vector3 spawnPosition = GetRandomSpawnPosition();
 
         // Spawn the enemy at the random position
-        Instantiate(slowEnemyToSpawn, getEnemySpawnPos(), Quaternion.identity);
+        GameObject spawned = Instantiate(slowEnemyToSpawn, getEnemySpawnPos(), Quaternion.identity);
+        if (cactiLeft == 3)
+        {
+            spawned.GetComponent<Enemy>().moveSpeed = 4.2f;
+        }
+        if (cactiLeft == 2)
+        {
+            spawned.GetComponent<Enemy>().moveSpeed = 4.5f;
+        }
+        if (cactiLeft == 1)
+        {
+            spawned.GetComponent<Enemy>().moveSpeed = 4.7f;
+        }
     }
 
     private Vector3 getEnemySpawnPos()
@@ -122,10 +199,29 @@ public class GameManager : MonoBehaviour
         return spawnPosition;
     }
 
+    #endregion
+
+    #region Public Functions
+
+    public void CactusDie()
+    {
+        cactiLeft -= 1;
+    }
+
+    public void PlayerDie()
+    {
+        GameOver();
+    }
+
+    #endregion
+    #region Gizmos
+
     private void OnDrawGizmosSelected()
     {
         // Draw a wire sphere in the scene view to show the spawn radius
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, spawnRadius);
     }
+
+    #endregion
 }

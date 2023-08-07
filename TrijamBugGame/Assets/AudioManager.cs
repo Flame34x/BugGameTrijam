@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        currentTrackIndex = Random.Range(0, musicTracks.Length);
         PlayTrack(currentTrackIndex);
     }
 

@@ -108,7 +108,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7679083508794041174, guid: b7d9018763abb9241afa05fc2d867a1e, type: 3}
-  m_Color: {r: 0.18098079, g: 0.7830189, b: 0.20110267, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -130,14 +130,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a899a8db8b16c8340915b31c4298bda8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWater: 0
   maxWater: 25
   hideSpot: {fileID: 5234564027282924546}
   healthBoostAmount: 1
   requiredHideTime: 3
   dryColor: {r: 0, g: 1, b: 0, a: 1}
-  rottenColor: {r: 0.33962262, g: 0, b: 0, a: 1}
-  waterLossInterval: 2
+  rottenColor: {r: 0.4039216, g: 0.3529412, b: 0.16862746, a: 1}
+  waterLossInterval: 0.8
   waterLossAmount: 1
+  isAlive: 1
 --- !u!61 &5234564028099748619
 BoxCollider2D:
   m_ObjectHideFlags: 0

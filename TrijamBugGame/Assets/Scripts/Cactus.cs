@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Cactus : MonoBehaviour
 {
-    private int currentWater = 0;
+    public int currentWater = 0;
     public int maxWater = 25;
 
     public Transform hideSpot;
@@ -26,6 +26,9 @@ public class Cactus : MonoBehaviour
 
     Animator anim;
 
+    public bool isAlive = true;
+    private bool hasDied = false;
+
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -40,21 +43,38 @@ public class Cactus : MonoBehaviour
     private void Update()
     {
         UpdateAnimation();
-
-        if (isPlayerHiding) // Only apply health boost if the player is hiding in the cactus
+        if (isAlive)
         {
-            hideDuration = Time.time - playerHideStartTime;
-            if (!healthBoosted)
+
+            if (isPlayerHiding) // Only apply health boost if the player is hiding in the cactus
             {
-                if (hideDuration >= requiredHideTime)
+                hideDuration = Time.time - playerHideStartTime;
+                if (!healthBoosted)
                 {
-                    if (GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().isHiding)
+                    if (hideDuration >= requiredHideTime)
                     {
-                        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>().AddHealth(healthBoostAmount);
-                        healthBoosted = true;
+                        if (GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().isHiding)
+                        {
+                            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>().AddHealth(healthBoostAmount);
+                            healthBoosted = true;
+                        }
                     }
                 }
             }
+        }
+
+        if (!isAlive)
+        {
+            if (!hasDied)
+            {
+                GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().CactusDie();
+                hasDied = true;
+            }
+        }
+
+        if (currentWater == 0)
+        {
+            isAlive = false;
         }
     }
 

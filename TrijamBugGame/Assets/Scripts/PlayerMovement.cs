@@ -35,7 +35,6 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     private SpriteRenderer sr;
-    public static PlayerMovement Instance;
     private Animator anim;
 
 
@@ -46,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        Instance = this;
     }
 
     private void Update()
@@ -188,8 +186,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCactusEnter(GameObject cactus)
     {
-        isNearCactus = true;
-        cactusNearby = cactus;
+        if (cactus.GetComponent<Cactus>().isAlive)
+        {
+            isNearCactus = true;
+            cactusNearby = cactus;
+        }
     }
 
     private void HandleCactusExit()

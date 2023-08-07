@@ -26,6 +26,7 @@ public class PlayerHealth : MonoBehaviour
             currentHealth -= damageAmount;
             if (currentHealth <= 0)
             {
+                FindObjectOfType<GameManager>().PlayerDie();
                 Die();
             }
             else
